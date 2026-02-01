@@ -33,3 +33,12 @@ class TaskView(APIView):
         tasktb = TaskModel.objects.all()
         serializer = TaskSerialzer(tasktb,many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
+    
+    def delete(self,request,id):
+        try:
+            tasktable = TaskModel.objects.get(id=id)
+            tasktable.delete()
+            return Response({'message':'Data deleted successfully'},status=status.HTTP_200_OK)
+        except TaskModel.DoesNotExist:
+            return Response({'message':'Data not found'},status=status.HTTP_400_BAD_REQUEST)
+
