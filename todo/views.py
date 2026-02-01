@@ -1,0 +1,35 @@
+from django.shortcuts import render
+from django.http import HttpResponse
+
+from rest_framework.views import APIView
+from .serializers import TaskSerialzer
+from rest_framework.response import Response
+from rest_framework import status
+
+from .models import TaskModel
+
+# Create your views here.
+
+def home(request):
+    return HttpResponse('<h1>Hello World</h1>')
+
+
+class TaskView(APIView):
+    
+    #POST
+    def post(self,request):
+        print(request.data)
+        serializer = TaskSerialzer(data=request.data)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    
+    #GET
+
+    def get(self,request):
+
+        tasktb = TaskModel.objects.all()
+        serializer = TaskSerialzer(tasktb,many=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
