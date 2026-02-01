@@ -41,4 +41,16 @@ class TaskView(APIView):
             return Response({'message':'Data deleted successfully'},status=status.HTTP_200_OK)
         except TaskModel.DoesNotExist:
             return Response({'message':'Data not found'},status=status.HTTP_400_BAD_REQUEST)
+    #PUT
+    def put(self,request,id):
+        try:
+            tasktable = TaskModel.objects.get(id=id)
+            serializer = TaskSerialzer(tasktable,data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data,status=status.HTTP_201_CREATED)
+            return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)        
+        except TaskModel.DoesNotExist:
+            return Response({'message':'id not found'},status=status.HTTP_400_BAD_REQUEST)   
+            
 
